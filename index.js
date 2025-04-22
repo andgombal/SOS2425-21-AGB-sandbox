@@ -1,13 +1,15 @@
 import express from "express";
 import cors from "cors";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
 import { loadBackendAGB } from "./src/back/public-transit.js";
-
-import { handler } from './src/front/build/handler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// Ruta dinámica que se ajusta a GitHub Actions y Render
+const handlerPath = resolve(__dirname, 'src/front/build/handler.js');
+const { handler } = await import(`file://${handlerPath}`);
 
 const app = express();
 const PORT = process.env.PORT || 16078;
@@ -20,15 +22,12 @@ app.use(cors());
 
 app.get("/", (req, res) => {
     res.redirect("/about");
-  });
-  
+});
 
 loadBackendAGB(app);
-
 
 app.use(handler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
