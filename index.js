@@ -1,21 +1,24 @@
 import express from "express";
 import cors from "cors";
 import { fileURLToPath } from "url";
-import { dirname, resolve, join } from "path";
+import { dirname, join, resolve } from "path";
 import { loadBackendAGB } from "./src/back/public-transit.js";
+import { promises as fs } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Usar una ruta absoluta para asegurar que funcione correctamente
-const handlerPath = join(__dirname, 'src', 'front', 'build', 'handler.js');
+// Especificamos la ruta absoluta con un nombre claro
+const handlerPath = process.env.NODE_ENV === 'production' 
+  ? '/opt/render/project/src/src/front/build/handler.js' // Path en Render
+  : join(__dirname, 'src', 'front', 'build', 'handler.js');  // Path local
 
-// Verifica si el archivo existe en el path esperado
-import { promises as fs } from 'fs';
-
+// Verificar si el archivo existe
 async function startServer() {
   try {
-    await fs.access(handlerPath); // Verifica si el archivo existe
+    // Verificar si el archivo handler.js existe
+    await fs.access(handlerPath);
+
     const { handler } = await import(`file://${handlerPath}`);
     const app = express();
     const PORT = process.env.PORT || 16078;
@@ -37,8 +40,8 @@ async function startServer() {
       console.log(`Server is running on port ${PORT}`);
     });
   } catch (error) {
-    console.error("Handler file not found or error loading handler:", error);
-    process.exit(1); // Detener si no se encuentra el archivo handler.js
+    console.error(`Error loading handler from: ${handlerPath}`, error);
+    process.exit(1);  // Detener si el archivo no se encuentra
   }
 }
 
