@@ -29,11 +29,11 @@ test('create and delete transit trip', async ({ page }) => {
   // Llenar el formulario de creación
   await page.getByRole('link', { name: 'Estadísticas sobre los viajes en autobús urbano en España' }).click();
 
-  await page.locator('#Province').nth(0).fill(testProvince);     // Provincia
-  await page.locator('#Year').nth(1).fill(testYear);         // Año
-  await page.locator('#Price').nth(2).fill(testPrice);        // Precio
-  await page.locator('#Trips').nth(3).fill(testTrips);        // Viajes
-  await page.locator('#Length').nth(4).fill(testLength);       // Longitud
+  await page.locator('#Province').fill(testProvince);     // Provincia
+  await page.locator('#Year').fill(testYear);         // Año
+  await page.locator('#Price').fill(testPrice);        // Precio
+  await page.locator('#Trips').fill(testTrips);        // Viajes
+  await page.locator('#Length').fill(testLength);       // Longitud
 
   // Crear el viaje
   await page.getByRole('button', { name: "Create" }).click();
