@@ -1,17 +1,17 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => { await page.goto('localhost:16078');
+test('has title', async ({ page }) => { await page.goto('http://localhost:16078');
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/API_GRUPO_21/);
 });
 
 test('get public-transit-stats link', async ({ page }) => {
-  await page.goto('localhost:16078');
+  await page.goto('http://localhost:16078');
 
   // Click the emigration link.
-  await page.getByRole('link', { name: 'API Viajes Autobús Urbano' }).click();
+  await page.getByRole('link', { name: 'Estadísticas sobre los viajes en autobús urbano en España' }).click();
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/Public Transit Manager/);
@@ -24,10 +24,10 @@ test('create and delete transit trip', async ({ page }) => {
   const testTrips = "99999";
   const testLength = "123.45";
 
-  await page.goto('localhost:16078');
+  await page.goto('http://localhost:16078');
 
   // Llenar el formulario de creación
-  await page.getByRole('link', { name: 'API Viajes Autobús Urbano' }).click();
+  await page.getByRole('link', { name: 'Estadísticas sobre los viajes en autobús urbano en España' }).click();
 
   await page.locator('#Province').nth(0).fill(testProvince);     // Provincia
   await page.locator('#Year').nth(1).fill(testYear);         // Año
