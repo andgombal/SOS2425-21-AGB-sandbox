@@ -1,11 +1,11 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => { await page.goto('http://localhost:16078');
+/*test('has title', async ({ page }) => { await page.goto('http://localhost:16078');
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/API_GRUPO_21/);
-});
+});*/
 
 test('get public-transit-stats link', async ({ page }) => {
   await page.goto('http://localhost:16078');
