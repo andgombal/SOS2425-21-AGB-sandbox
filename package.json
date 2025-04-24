@@ -9,7 +9,7 @@
     "test-public-transit-local": "npx newman run tests/back/AGB/api-tests-AGB.json  -e tests/back/AGB/api-env-local-AGB.json ",
     "test-public-transit-online": "npx newman run tests/back/AGB/api-tests-AGB.json  -e tests/back/AGB/api-env-online-AGB.json ",
     "test-AGB-local": "start-server-and-test start http://localhost:16078 test-public-transit-local",
-    "test-AGB-online": "start-server-and-test start https://sos2425-21.onrender.com test-public-transit-online",
+    "test-AGB-online": "start-server-and-test start https://sos2425-21-agb-sandbox.onrender.com test-public-transit-online",
     "test-public-transit-stats": "npm run test-AGB-local",
     "test-AGB-onl": "npm run test-AGB-online",
     "test": "npm run test-AGB-local",
@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gti-sos/SOS2425-21.git"
+    "url": "git+https://github.com/gti-sos/SOS2425-21-agb-sandbox.git"
   },
   "author": "Laura Eraso Lorenzo, Andrea Gomez Balmaseda, Paula Ruiz Gardón",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/gti-sos/SOS2425-21/issues"
+    "url": "https://github.com/gti-sos/SOS2425-21-agb-sandbox/issues"
   },
-  "homepage": "https://github.com/gti-sos/SOS2425-21#readme",
+  "homepage": "https://github.com/gti-sos/SOS2425-21-agb-sandbox#readme",
   "dependencies": {
     "bootstrap": "^5.3.5",
     "cool-ascii-faces": "^1.3.4",
