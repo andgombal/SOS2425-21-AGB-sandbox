@@ -51,7 +51,8 @@
             const data = await res.json();
             result = JSON.stringify(data,null,2);
 
-            transitData = data.data;
+            transitData = Array.isArray(data) ? data : data.data;
+
             console.log(`Response received:\n${JSON.stringify(transitData,null,2)}`);
 
         } catch (error){
