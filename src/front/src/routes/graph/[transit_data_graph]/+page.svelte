@@ -61,9 +61,59 @@
 
 <script>
     import {onMount} from "svelte";
+    import { dev } from '$app/environment';
+
+    // @ts-ignore
+    let transitData = [];
+    let result = "";
+    let resultStatus = "";
+
+    let API = `/api/v1/public-transit-stats/`;
+    if (dev) {
+        API = `http://localhost:16078` + API;
+    }
 
 
-    onMount(async () =>{
+    async function getData() {
+        resultStatus = result = "";
+        try {
+            const res = await fetch(API, { method: "GET" });
+            const data = await res.json();
+            transitData = data;
+            result = JSON.stringify(data, null, 2);
+            transitData = data;
+            console.log(`Response received:\n${JSON.stringify(transitData, null, 2)}`);
+            drawChart();
+        } catch (error) {
+            console.log(`ERROR: GET from ${API}: ${error}`);
+        }
+    }
+
+    function drawChart(){
+        const provincesSet = new Set();
+        const yearsSet = new Set();
+
+        // @ts-ignore
+        transitData.forEach(item=>{
+            provincesSet.add(item.province);
+            yearsSet.add(item.year);
+        })
+
+        const provinces = Array.from(provincesSet);
+        const years = Array.from(yearsSet).sort(); 
+
+        const series = years.map(year => {
+            return {
+                name: `Year ${year}`,
+                data: provinces.map(province => {
+                    
+                    // @ts-ignore
+                    const found = transitData.find(item => item.year === year && item.province === province);
+                    return found ? found.total_trips / 1000000 : 0; // Valor en millones
+                })
+            }
+        });
+    
         // @ts-ignore
         Highcharts.chart('container', {
         chart: {
@@ -73,7 +123,7 @@
             text: 'Viajes en autobús urbano en España'
         },
         xAxis: {
-            categories: ['Madrid','Barcelona', 'Valencia', 'Sevilla', 'Bizkaia', 'Malaga', 'Alicante'],
+            categories: provinces,
             title: {
                 text: null
             },
@@ -83,7 +133,7 @@
         yAxis: {
             min: 0,
             title: {
-                text: 'Viajes',
+                text: 'Viajes (millones)',
                 align: 'high'
             },
             labels: {
@@ -119,19 +169,13 @@
         credits: {
             enabled: false
         },
-        series: [{
-            name: 'Year 1990',
-            data: [632, 727, 3202, 721]
-        }, {
-            name: 'Year 2000',
-            data: [814, 841, 3714, 726]
-        }, {
-            name: 'Year 2021',
-            data: [1393, 1031, 4695, 745]
-        }]
+        series: series
     });
+    }
 
-    })
+    onMount(async () => {
+        await getData();
+    });
 </script>
 
 <figure class="highcharts-figure">
