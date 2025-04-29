@@ -26,11 +26,9 @@
     let newTrips = "";
     let newLength= "";
 
-    let filtroYear = "";
-    let filtroProvince = "";
-    let filtroTicketPrice = "";
-    let filtroTotalTrips = "";
-    let filtroRouteLength = "";
+    let searchFrom = "";
+    let searchTo = "";
+    let searchProvince = "";
 
     let alertMessage = "";
     let alertType = "";
@@ -48,15 +46,7 @@
     async function getData() {
         resultStatus = result = "";
         try {
-            let url = new URL(API);
-
-            if (filtroYear) url.searchParams.append("year", filtroYear);
-            if (filtroProvince) url.searchParams.append("province", filtroProvince);
-            if (filtroTicketPrice) url.searchParams.append("ticket_price", filtroTicketPrice);
-            if (filtroTotalTrips) url.searchParams.append("total_trips", filtroTotalTrips);
-            if (filtroRouteLength) url.searchParams.append("route_length", filtroRouteLength);
-            
-            const res = await fetch(url.toString(), { method: "GET" });
+            const res = await fetch(API,{method:"GET"});
   
             const data = await res.json();
             result = JSON.stringify(data,null,2);
@@ -188,14 +178,6 @@
         }
     }
 
-    function clean() {
-        filtroYear = "";
-        filtroProvince = "";
-        filtroTicketPrice = "";
-        filtroTotalTrips = "";
-        filtroRouteLength = "";
-        getData();
-    }
     onMount(async () => {
         getData();
     })
@@ -207,35 +189,21 @@
     </Alert>
 {/if}
 
-<h2 style="display: flex; justify-content: space-between; align-items: center;">
-    <span>Trips List</span>
-    <span>
-        <Button color="success" on:click={() => goto('/public-transit-stats/pie-graph')} class="me-2">Pie Graph</Button>
-        <Button color="primary" on:click={() => goto('/public-transit-stats/bar-graph')}>Bar Graph</Button>
-    </span>
-</h2>
+<h2>Trips List</h2>
 <h3>Búsqueda</h3>
 <div class="mb-3">
-    <label for="filtroYear">Año:</label>
-    <input id="filtroYear" bind:value={filtroYear} placeholder="Ej. 2010" class="me-3">
+    <label for="fromYear">Desde el año:</label>
+    <input id="fromYear" bind:value={searchFrom} placeholder="Ej. 2000">
 
-    <label for="filtroProvince">Provincia:</label>
-    <input id="filtroProvince" bind:value={filtroProvince} placeholder="Ej. Sevilla" class="me-3">
+    <label for="toYear">Hasta el año:</label>
+    <input id="toYear" bind:value={searchTo} placeholder="Ej. 2017">
 
-    <label for="filtroTicketPrice">Precio:</label>
-    <input id="filtroTicketPrice" bind:value={filtroTicketPrice} placeholder="Ej. 1.5" class="me-3">
+    <label for="provinceSearch">Provincia:</label>
+    <input id="provinceSearch" bind:value={searchProvince} placeholder="Ej. Sevilla">
 
-    <label for="filtroTotalTrips">Viajes totales:</label>
-    <input id="filtroTotalTrips" bind:value={filtroTotalTrips} placeholder="Ej. 120000" class="me-3">
-
-    <label for="filtroRouteLength">Longitud ruta:</label>
-    <input id="filtroRouteLength" bind:value={filtroRouteLength} placeholder="Ej. 23.5" class="me-3">
-
-    <Button color="info" on:click={getData} class="me-2">Buscar</Button>
-    <Button color="secondary" on:click={clean}>Limpiar</Button>
-
+    <Button color="info" on:click={searchTrips}>Buscar</Button>
+    <Button color="secondary" on:click={getData}>Limpiar</Button>
 </div>
-
 <Table>
     <thead>
         <tr>
