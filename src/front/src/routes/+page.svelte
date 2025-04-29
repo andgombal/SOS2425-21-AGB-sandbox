@@ -18,7 +18,6 @@
    
   </ul>
   
-  <a href="/graph">Gráficas</a>
   <h2>Repositorio del equipo</h2>
   <a href="https://github.com/gti-sos/SOS2425-21-agb-sandbox">https://github.com/gti-sos/SOS2425-21</a>
   
