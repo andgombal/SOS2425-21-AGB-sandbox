@@ -19,3 +19,11 @@
 {"year":2024,"province":"Alicante","ticket_price":1.35,"total_trips":19950000,"route_length":694,"_id":"oOK87VoziAEvmgIc"}
 {"year":2015,"province":"Madrid","ticket_price":1.5,"total_trips":609900000,"route_length":24465.8,"_id":"pyxMqj9DZ5aAdBHZ"}
 {"year":2015,"province":"Sevilla","ticket_price":1.5,"total_trips":86500000,"route_length":3234.1,"_id":"x9StT8tlWn8JBrJc"}
+{"province":"__TEST_PROVINCE__","year":2099,"ticket_price":1.99,"total_trips":99999,"route_length":123.45,"_id":"lgTm1O5J1bKPhAI8"}
+{"$$deleted":true,"_id":"lgTm1O5J1bKPhAI8"}
+{"province":"__TEST_PROVINCE__","year":2099,"ticket_price":1.99,"total_trips":99999,"route_length":123.45,"_id":"tOlS6yXsaeAAuisU"}
+{"$$deleted":true,"_id":"tOlS6yXsaeAAuisU"}
+{"province":"q","year":2,"ticket_price":2,"total_trips":2,"route_length":2,"_id":"ftrYAYApwaqQmjeV"}
+{"$$deleted":true,"_id":"ftrYAYApwaqQmjeV"}
+{"province":"__TEST_PROVINCE__","year":2099,"ticket_price":1.99,"total_trips":99999,"route_length":123.45,"_id":"n8ZgZYOeOepkj5N0"}
+{"$$deleted":true,"_id":"n8ZgZYOeOepkj5N0"}
