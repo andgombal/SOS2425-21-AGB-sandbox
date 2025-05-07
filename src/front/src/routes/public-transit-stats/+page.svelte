@@ -26,11 +26,13 @@
     let newTrips = "";
     let newLength= "";
 
-    let filtroYear = "";
-    let filtroProvince = "";
-    let filtroTicketPrice = "";
-    let filtroTotalTrips = "";
-    let filtroRouteLength = "";
+    //filtros
+    let searchProvince = "";
+    let searchYear = "";
+    let searchPrice = "";
+    let searchTrip = "";
+    let searchLength = "";
+
 
     let alertMessage = "";
     let alertType = "";
@@ -48,15 +50,7 @@
     async function getData() {
         resultStatus = result = "";
         try {
-            let url = new URL(API);
-
-            if (filtroYear) url.searchParams.append("year", filtroYear);
-            if (filtroProvince) url.searchParams.append("province", filtroProvince);
-            if (filtroTicketPrice) url.searchParams.append("ticket_price", filtroTicketPrice);
-            if (filtroTotalTrips) url.searchParams.append("total_trips", filtroTotalTrips);
-            if (filtroRouteLength) url.searchParams.append("route_length", filtroRouteLength);
-            
-            const res = await fetch(url.toString(), { method: "GET" });
+            const res = await fetch(API,{method:"GET"});
   
             const data = await res.json();
             result = JSON.stringify(data,null,2);
@@ -166,18 +160,20 @@
         try {
             let url = new URL(API);
 
-            if (searchFrom) url.searchParams.append("from", searchFrom);
-            if (searchTo) url.searchParams.append("to", searchTo);
             if (searchProvince) url.searchParams.append("province", searchProvince);
+            if (searchYear) url.searchParams.append("year", searchYear);
+            if (searchPrice) url.searchParams.append("ticket_price", searchPrice);
+            if (searchTrip) url.searchParams.append("total_trips", searchTrip);
+            if (searchLength) url.searchParams.append("route_length", searchLength);
 
             const res = await fetch(url.toString(), { method: "GET" });
             const data = await res.json();
             resultStatus = res.status;
             result = JSON.stringify(data, null, 2);
-            transitData = data.data;
+            transitData = Array.isArray(data) ? data : data.data;
 
             console.log("Filtered trips:", transitData);
-            if (transitData.length === 0) {
+            if (!transitData || transitData.length === 0) {
                 showUserAlert("No se encontraron viajes con los filtros aplicados", "warning");
             } else {
                 showUserAlert("Búsqueda realizada correctamente", "info");
@@ -188,14 +184,6 @@
         }
     }
 
-    function clean() {
-        filtroYear = "";
-        filtroProvince = "";
-        filtroTicketPrice = "";
-        filtroTotalTrips = "";
-        filtroRouteLength = "";
-        getData();
-    }
     onMount(async () => {
         getData();
     })
@@ -214,26 +202,24 @@
 
 <h3>Búsqueda</h3>
 <div class="mb-3">
-    <label for="filtroYear">Año:</label>
-    <input id="filtroYear" bind:value={filtroYear} placeholder="Ej. 2010" class="me-3">
+    <label for="provinceSearch">Provincia:</label>
+    <input id="provinceSearch" bind:value={searchProvince} placeholder="Ej. Sevilla">
 
-    <label for="filtroProvince">Provincia:</label>
-    <input id="filtroProvince" bind:value={filtroProvince} placeholder="Ej. Sevilla" class="me-3">
+    <label for="yearSearch">Año:</label>
+    <input id="yearSearch" bind:value={searchYear} placeholder="Ej. 2015">
 
-    <label for="filtroTicketPrice">Precio:</label>
-    <input id="filtroTicketPrice" bind:value={filtroTicketPrice} placeholder="Ej. 1.5" class="me-3">
+    <label for="priceSearch">Precio del billete:</label>
+    <input id="priceSearch" bind:value={searchPrice} placeholder="Ej. 1.20">
 
-    <label for="filtroTotalTrips">Viajes totales:</label>
-    <input id="filtroTotalTrips" bind:value={filtroTotalTrips} placeholder="Ej. 120000" class="me-3">
+    <label for="tripsSearch">Número de viajes:</label>
+    <input id="tripsSearch" bind:value={searchTrip} placeholder="Ej. 45000">
 
-    <label for="filtroRouteLength">Longitud ruta:</label>
-    <input id="filtroRouteLength" bind:value={filtroRouteLength} placeholder="Ej. 23.5" class="me-3">
+    <label for="lengthSearch">Longitud de la ruta:</label>
+    <input id="lengthSearch" bind:value={searchLength} placeholder="Ej. 28.5">
 
-    <Button color="info" on:click={getData} class="me-2">Buscar</Button>
-    <Button color="secondary" on:click={clean}>Limpiar</Button>
-
+    <Button color="info" on:click={searchTrips}>Buscar</Button>
+    <Button color="secondary" on:click={getData}>Limpiar</Button>
 </div>
-
 <Table>
     <thead>
         <tr>

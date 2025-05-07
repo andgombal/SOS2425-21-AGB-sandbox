@@ -1,6 +1,8 @@
-const BASE_API = "/api/v1";
 import DataStore from "nedb";
+import express from 'express';
+import request from 'request';
 
+const BASE_API = "/api/v1";
 let db_AGB = new DataStore({ filename: "publicTransitStats.db", autoload: true });
 const RESOURCE = "public-transit-stats";
 
@@ -37,6 +39,7 @@ db_AGB.find({}, (err, trips) => {
         db_AGB.insert(initialData);
     }
 });
+
 
 function loadBackendAGB(app) {
     // Endpoint para cargar los datos iniciales desde el CSV
@@ -114,6 +117,23 @@ function loadBackendAGB(app) {
                 }), null, 2));
             }
         })
+    });
+
+    //proxy
+    const paths = '/proxy/cost-of-living';
+    const apiServerHost = 'https://cost-of-living-and-prices.p.rapidapi.com';
+
+    app.use(paths, function(req, res) {
+        const url = apiServerHost + req.url;
+        console.log('Proxying to:', url);
+        const options = {
+            url,
+            headers: {
+                'X-RapidAPI-Key': '2a354653a3mshe8b0c196513d19bp11ac11jsn5c666ee93581',
+                'X-RapidAPI-Host': 'cost-of-living-and-prices.p.rapidapi.com'
+            }
+        };
+        req.pipe(request(options)).pipe(res);
     });
 
     // Redireccionar a la documentación

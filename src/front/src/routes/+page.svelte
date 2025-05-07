@@ -1,23 +1,44 @@
-<svelte:head>
-    <title>API_GRUPO_21</title>
-</svelte:head>
+<script>
+    import { dev } from '$app/environment';
+  
+    // Aquí, configuramos el base URL para las APIs dependiendo de si estamos en desarrollo o producción
+    let baseAPI = "/api/v1"; // Para producción
+    if (dev) {
+      baseAPI = "http://localhost:16078/api/v1"; // Para desarrollo
+    }
+  
+    const team = [
+      {
+        name: "Andrea Gómez Balmaseda",
+        frontend: "/public-transit-stats",
+        api: `${baseAPI}/public-transit-stats`,
+        postman: "https://documenter.getpostman.com/view/41997974/2sB2cSi4as",
+        dataset: "public-transit-stats",
+        integration: "/integrations/AGB"
+      },
+      
+    ];
+  
+    const github = "https://github.com/gti-sos/SOS2425-21";
+  </script>
   
   <h1>Proyecto SOS2425 - Grupo 21</h1>
   
   <h2>Miembros del equipo y sus recursos</h2>
   <ul>
-
+    {#each team as member}
       <li>
-        <strong>Andrea Gómez Balmaseda</strong><br>
-        Frontend: <a href="/public-transit-stats">/public-transit-stats</a><br>
-        API: <a href="https://sos2425-21-agb-sandbox.onrender.com/api/v1/public-transit-stats">API Viajes Autobús Urbano</a><br>
-        Postman: <a href="https://documenter.getpostman.com/view/41997974/2sB2cSi4asv">Documentación</a><br>
-        Dataset: public-transit-stats
+        <strong>{member.name}</strong><br>
+        Frontend: <a href="{member.frontend}">{member.frontend}</a><br>
+        API: <a href="{member.api}">{member.api}</a><br>
+        Postman: <a href="{member.postman}">Documentación</a><br>
+        Dataset: {member.dataset}<br>
+        Integraciones: <a href="{member.integration}">{member.integration}</a><br>
       </li>
       <br>
-   
+    {/each}
   </ul>
   
   <h2>Repositorio del equipo</h2>
-  <a href="https://github.com/gti-sos/SOS2425-21-agb-sandbox">https://github.com/gti-sos/SOS2425-21</a>
+  <a href="{github}">{github}</a>
   
