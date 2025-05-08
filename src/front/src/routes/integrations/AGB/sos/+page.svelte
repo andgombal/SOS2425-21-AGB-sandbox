@@ -71,14 +71,27 @@
       }
     }
   }
-
+  async function getData15() {
+    try {
+      const api15 = await fetch('https://sos2425-15.onrender.com/api/v1/temperature-stats');
+      temperatura = await api15.json();
+    } catch(err){
+      console.error("ERROR: GET data 15", error);
+    } finally {
+      cargandoTemperaturas = false;
+      await tick();
+      if (plotContainer){
+        dibujarViolinPlot();
+      }
+    }
+  }
 
   async function getData17() {
-    /*try {
+    try {
       await fetch("https://sos2425-17.onrender.com/api/v2/university-demands/loadInitialData");
     } catch (err) {
       console.warn("Los datos iniciales ya estaban cargados o hubo otro aviso:", err);
-    }*/
+    }
     try {
       const api17 = await fetch("https://sos2425-17.onrender.com/api/v2/university-demands");
       universidad = await api17.json();
@@ -94,11 +107,11 @@
   }
 
   async function getData20() {
-    /*try {
+    try {
       await fetch("https://sos2425-20.onrender.com/api/v1/accidents-with-animals/loadInitialData");
     } catch (err) {
       console.warn("Los datos iniciales ya estaban cargados o hubo otro aviso:", err);
-    }*/
+    }
     try {
       const api20 = await fetch('https://sos2425-20.onrender.com/api/v1/accidents-with-animals');
       accidentes = await api20.json();
@@ -183,7 +196,72 @@
     });
   }
 
- 
+  function dibujarViolinPlot() {
+    const provinciasObjetivo = ["Sevilla", "Málaga"];
+
+    const datosTransporte = transporte
+      .filter(item =>
+        provinciasObjetivo.includes(item.province) && item.year === 2024
+      )
+      .map(item => item.total_trips);
+
+    const datosTemperatura = temperatura
+      .filter(item =>
+        provinciasObjetivo.includes(item.province) && item.year === 2023
+      )
+      .map(item => item.average_temperature);
+
+    const data = [
+      {
+        type: 'violin',
+        y: datosTransporte,
+        x: Array(datosTransporte.length).fill('Viajes (2024)'),
+        name: 'Viajes (2024)',
+        box: { visible: true },
+        line: { color: 'blue' },
+        meanline: { visible: true }
+      },
+      {
+        type: 'violin',
+        y: datosTemperatura,
+        x: Array(datosTemperatura.length).fill('Temperatura (2023)'),
+        name: 'Temperatura (2023)',
+        box: { visible: true },
+        line: { color: 'red' },
+        meanline: { visible: true }
+      }
+    ];
+
+    const layout = {
+      yaxis: { zeroline: false },
+      xaxis: { title: 'Categoría' },
+      margin: {
+        l: 80,
+        r: 80, 
+        t: 100, 
+        b: 100  
+      },
+      height: 600, 
+      //width: 800,  
+      showlegend: true,
+      xaxis: {
+        title: {
+          text: 'Categoría',
+          font: { size: 14 },
+          standoff: 10
+        },
+        tickangle: -45,  
+      },
+      yaxis: {
+        title: {
+          text: 'Valor',
+          font: { size: 14 }
+        }
+      }
+    };
+
+    Plotly.newPlot(plotContainer, data, layout);
+  }
 
 function dibujarPolarChart() {
   const demanda = universidad.find(u =>
@@ -233,6 +311,7 @@ function dibujarStreamGraph() {
     value: precios.reduce((a, b) => a + b, 0) / precios.length
   }));
 
+  // Accidentes por animal_group
   const accidentData = accidentes
     .filter(d => d.year === añoObjetivo)
     .reduce((acc, curr) => {
@@ -288,7 +367,7 @@ function dibujarStreamGraph() {
 onMount(async () => {
   await getData21();
   await getData18();
-
+  await getData15();
   await getData17();
   await getData20();
 });
@@ -304,7 +383,14 @@ onMount(async () => {
   {/if}
 </section>
 
-
+<section>
+  <h2>Transporte y Temperatura</h2>
+  {#if cargandoTemperaturas || cargandoTransporte}
+    <p>Cargando datos...</p>
+  {:else}
+    <div bind:this={plotContainer} style="width: 100%; height: 500px; overflow: hidden;"></div>
+  {/if}
+</section>
 
 <section>
   <h2>Transporte y Universidades</h2>
