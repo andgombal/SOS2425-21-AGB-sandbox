@@ -87,11 +87,11 @@
   }
 
   async function getData17() {
-    try {
+    /*try {
       await fetch("https://sos2425-17.onrender.com/api/v2/university-demands/loadInitialData");
     } catch (err) {
       console.warn("Los datos iniciales ya estaban cargados o hubo otro aviso:", err);
-    }
+    }*/
     try {
       const api17 = await fetch("https://sos2425-17.onrender.com/api/v2/university-demands");
       universidad = await api17.json();
@@ -107,11 +107,11 @@
   }
 
   async function getData20() {
-    try {
+    /*try {
       await fetch("https://sos2425-20.onrender.com/api/v1/accidents-with-animals/loadInitialData");
     } catch (err) {
       console.warn("Los datos iniciales ya estaban cargados o hubo otro aviso:", err);
-    }
+    }*/
     try {
       const api20 = await fetch('https://sos2425-20.onrender.com/api/v1/accidents-with-animals');
       accidentes = await api20.json();
@@ -264,14 +264,12 @@
   }
 
 function dibujarPolarChart() {
-  // Graduados en Badajoz 2017-2018
   const demanda = universidad.find(u =>
     u.location === "BADAJOZ" &&
     u.academicYear === "2017-2018" &&
     u.degree === "GRADO EN EDUCACIÓN PRIMARIA"
   );
 
-  // Ruta en Alicante 2024
   const transporteAlicante = transporte.find(t =>
     t.province === "Alicante" && t.year === 2024
   );
@@ -300,7 +298,6 @@ function dibujarPolarChart() {
 function dibujarStreamGraph() {
   const añoObjetivo = 2023;
 
-  // Ticket price por provincia
   const ticketData = transporte
     .filter(d => d.year === añoObjetivo)
     .reduce((acc, curr) => {
@@ -314,7 +311,6 @@ function dibujarStreamGraph() {
     value: precios.reduce((a, b) => a + b, 0) / precios.length
   }));
 
-  // Accidentes por animal_group
   const accidentData = accidentes
     .filter(d => d.year === añoObjetivo)
     .reduce((acc, curr) => {
