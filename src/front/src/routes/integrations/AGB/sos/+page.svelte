@@ -8,10 +8,6 @@
   <script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-  <link rel="stylesheet" href="https://unpkg.com/uplot@1.6.21/dist/uPlot.min.css">
-  <script src="https://unpkg.com/uplot@1.6.21/dist/uPlot.iife.min.js"></script>
-
 </svelte:head>
 
 <script>
@@ -73,7 +69,7 @@
   }
   async function getData15() {
     try {
-      const api15 = await fetch('https://sos2425-15.onrender.com/api/v1/temperature-stats');
+      const api15 = await fetch('ttps://sos2425-15.onrender.com/api/v1/temhperature-stats');
       temperatura = await api15.json();
     } catch(err){
       console.error("ERROR: GET data 15", error);
@@ -122,7 +118,7 @@
       await tick();
       if (streamContainer){
         console.log('Dibujando el gráfico de scatter');
-        dibujarStreamGraph();
+        dibujarBarGraph();
       }
     }
   }
@@ -295,7 +291,7 @@ function dibujarPolarChart() {
   new ApexCharts(radarContainer, options).render();
 }
 
-function dibujarStreamGraph() {
+function dibujarBarGraph() {
   const añoObjetivo = 2023;
 
   const ticketData = transporte
@@ -307,11 +303,10 @@ function dibujarStreamGraph() {
     }, {});
 
   const avgTicketByProvince = Object.entries(ticketData).map(([prov, precios]) => ({
-    label: `Precio: ${prov}`,
+    name: `Precio medio - ${prov}`,
     value: precios.reduce((a, b) => a + b, 0) / precios.length
   }));
 
-  // Accidentes por animal_group
   const accidentData = accidentes
     .filter(d => d.year === añoObjetivo)
     .reduce((acc, curr) => {
@@ -320,48 +315,36 @@ function dibujarStreamGraph() {
     }, {});
 
   const animalSeries = Object.entries(accidentData).map(([animal, count]) => ({
-    label: `Animal: ${animal}`,
+    name: `Accidentes - ${animal}`,
     value: count
   }));
 
-  const labels = [...avgTicketByProvince, ...animalSeries];
-  const categories = labels.map(e => e.label);
-  const values = labels.map(e => e.value);
+  const combinedData = [...avgTicketByProvince, ...animalSeries];
 
-  const opts = {
-    width: streamContainer.clientWidth,
-    height: 400,
-    series: [
-      {
-        label: "Categoría",
-      },
-      {
-        label: "Valor",
-        stroke: "blue",
-        fill: "rgba(0, 100, 255, 0.3)"
+  const names = combinedData.map(e => e.name);
+  const values = combinedData.map(e => e.value);
+
+  const data = [{
+    type: 'bar',
+    x: values,
+    y: names,
+    orientation: 'h',
+    marker: {
+      color: 'rgba(58,71,80,0.6)',
+      line: {
+        color: 'rgba(58,71,80,1.0)',
+        width: 1
       }
-    ],
-    scales: {
-      x: { time: false },
-      y: { auto: true }
-    },
-    axes: [
-      {
-        stroke: "#333",
-        grid: { show: false },
-        values: categories,
-        space: 100
-      },
-      {}
-    ]
+    }
+  }];
+
+  const layout = {
+    title: 'Comparativa: Precio medio vs Accidentes con animales',
+    margin: { l: 200, r: 50, t: 50, b: 50 },
+    height: 500
   };
 
-  const data = [
-    categories.map((_, i) => i),
-    values
-  ];
-
-  new uPlot(opts, data, streamContainer);
+  Plotly.newPlot(streamContainer, data, layout);
 }
 
 onMount(async () => {
