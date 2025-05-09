@@ -26,9 +26,13 @@
     let newTrips = "";
     let newLength= "";
 
-    let searchFrom = "";
-    let searchTo = "";
+    //filtros
     let searchProvince = "";
+    let searchYear = "";
+    let searchPrice = "";
+    let searchTrip = "";
+    let searchLength = "";
+
 
     let alertMessage = "";
     let alertType = "";
@@ -51,7 +55,8 @@
             const data = await res.json();
             result = JSON.stringify(data,null,2);
 
-            transitData = data.data;
+            transitData = Array.isArray(data) ? data : data.data;
+
             console.log(`Response received:\n${JSON.stringify(transitData,null,2)}`);
 
         } catch (error){
@@ -153,20 +158,23 @@
     async function searchTrips() {
         resultStatus = result = "";
         try {
-            let url = new URL(API);
+            let url = new URL(API, window.location.origin);
 
-            if (searchFrom) url.searchParams.append("from", searchFrom);
-            if (searchTo) url.searchParams.append("to", searchTo);
+
             if (searchProvince) url.searchParams.append("province", searchProvince);
+            if (searchYear) url.searchParams.append("year", searchYear);
+            if (searchPrice) url.searchParams.append("ticket_price", searchPrice);
+            if (searchTrip) url.searchParams.append("total_trips", searchTrip);
+            if (searchLength) url.searchParams.append("route_length", searchLength);
 
             const res = await fetch(url.toString(), { method: "GET" });
             const data = await res.json();
             resultStatus = res.status;
             result = JSON.stringify(data, null, 2);
-            transitData = data.data;
+            transitData = Array.isArray(data) ? data : data.data;
 
             console.log("Filtered trips:", transitData);
-            if (transitData.length === 0) {
+            if (!transitData || transitData.length === 0) {
                 showUserAlert("No se encontraron viajes con los filtros aplicados", "warning");
             } else {
                 showUserAlert("Búsqueda realizada correctamente", "info");
@@ -189,16 +197,26 @@
 {/if}
 
 <h2>Trips List</h2>
+
+    <Button color="success" on:click={() => goto('/public-transit-stats/pie-graph')} class="me-2">Pie Graph</Button>
+    <Button color="primary" on:click={() => goto('/public-transit-stats/bar-graph')}>Bar Graph</Button>
+
 <h3>Búsqueda</h3>
 <div class="mb-3">
-    <label for="fromYear">Desde el año:</label>
-    <input id="fromYear" bind:value={searchFrom} placeholder="Ej. 2000">
-
-    <label for="toYear">Hasta el año:</label>
-    <input id="toYear" bind:value={searchTo} placeholder="Ej. 2017">
-
     <label for="provinceSearch">Provincia:</label>
     <input id="provinceSearch" bind:value={searchProvince} placeholder="Ej. Sevilla">
+
+    <label for="yearSearch">Año:</label>
+    <input id="yearSearch" bind:value={searchYear} placeholder="Ej. 2015">
+
+    <label for="priceSearch">Precio del billete:</label>
+    <input id="priceSearch" bind:value={searchPrice} placeholder="Ej. 1.20">
+
+    <label for="tripsSearch">Número de viajes:</label>
+    <input id="tripsSearch" bind:value={searchTrip} placeholder="Ej. 45000">
+
+    <label for="lengthSearch">Longitud de la ruta:</label>
+    <input id="lengthSearch" bind:value={searchLength} placeholder="Ej. 28.5">
 
     <Button color="info" on:click={searchTrips}>Buscar</Button>
     <Button color="secondary" on:click={getData}>Limpiar</Button>
@@ -218,19 +236,19 @@
     <tbody>
         <tr>
             <td>
-                <input bind:value={newProvince}>
+                <input id="Province" bind:value={newProvince}>
             </td>
             <td>
-                <input bind:value={newYear}>
+                <input id="Year" bind:value={newYear}>
             </td>
             <td>
-                <input bind:value={newPrice}>
+                <input id="Price" bind:value={newPrice}>
             </td>
             <td>
-                <input bind:value={newTrips}>
+                <input id="Trips" bind:value={newTrips}>
             </td>
             <td>
-                <input bind:value={newLength}>
+                <input id="Length" bind:value={newLength}>
             </td>
             <td>
                 <Button color="primary" on:click={createTrip}>Create</Button>

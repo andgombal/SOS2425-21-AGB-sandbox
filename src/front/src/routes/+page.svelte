@@ -13,15 +13,16 @@
         frontend: "/public-transit-stats",
         api: `${baseAPI}/public-transit-stats`,
         postman: "https://documenter.getpostman.com/view/41997974/2sB2cSi4as",
-        dataset: "public-transit-stats"
+        dataset: "public-transit-stats",
+        integration: "/integrations/AGB"
       },
-     
+      
     ];
   
     const github = "https://github.com/gti-sos/SOS2425-21";
   </script>
   
-  <h1>Proyecto SOS2425 - Grupo XX</h1>
+  <h1>Proyecto SOS2425 - Grupo 21</h1>
   
   <h2>Miembros del equipo y sus recursos</h2>
   <ul>
@@ -31,7 +32,8 @@
         Frontend: <a href="{member.frontend}">{member.frontend}</a><br>
         API: <a href="{member.api}">{member.api}</a><br>
         Postman: <a href="{member.postman}">Documentación</a><br>
-        Dataset: {member.dataset}
+        Dataset: {member.dataset}<br>
+        Integraciones: <a href="{member.integration}">{member.integration}</a><br>
       </li>
       <br>
     {/each}

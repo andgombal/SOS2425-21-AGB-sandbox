@@ -11,8 +11,9 @@ jobs:
       - name: Build front
         run: npm run build
       - name: Run tests
-        run: |
-          npm run test-AGB-onl
+        run: npm run test
+      - name: Run server for e2e tests
+        run: npm start &
       - name: Depoly to Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
