@@ -216,6 +216,7 @@ function dibujarPolarChart() {
 function dibujarStreamGraph() {
   const añoObjetivo = 2023;
 
+  // === DATOS DE TRANSPORTE ===
   const ticketData = transporte
     .filter(d => d.year === añoObjetivo)
     .reduce((acc, curr) => {
@@ -229,10 +230,12 @@ function dibujarStreamGraph() {
     value: precios.reduce((a, b) => a + b, 0) / precios.length
   }));
 
+  // === DATOS DE ACCIDENTES ===
   const accidentData = accidentes
-    .filter(d => d.year === añoObjetivo)
+    .filter(d => d.anyo === añoObjetivo)  // CAMBIO: era d.year
     .reduce((acc, curr) => {
-      acc[curr.animal_group] = (acc[curr.animal_group] || 0) + 1;
+      const grupo = `Grupo ${curr.animal_group}`; // O puedes mapear a nombres reales si los conoces
+      acc[grupo] = (acc[grupo] || 0) + 1;
       return acc;
     }, {});
 
@@ -241,7 +244,13 @@ function dibujarStreamGraph() {
     value: count
   }));
 
+  // === COMBINAR DATOS ===
   const combinedData = [...avgTicketByProvince, ...animalSeries];
+
+  if (combinedData.length === 0) {
+    console.warn("No hay datos para el año seleccionado:", añoObjetivo);
+    return;
+  }
 
   const names = combinedData.map(e => e.name);
   const values = combinedData.map(e => e.value);
@@ -262,13 +271,12 @@ function dibujarStreamGraph() {
 
   const layout = {
     title: 'Comparativa: Precio medio vs Accidentes con animales',
-    margin: { l: 200, r: 50, t: 50, b: 50 },
-    height: 500
+    margin: { l: 250, r: 50, t: 50, b: 50 },
+    height: 600
   };
 
   Plotly.newPlot(streamContainer, data, layout);
 }
-
 onMount(async () => {
   await getData21();
   await getData18();
